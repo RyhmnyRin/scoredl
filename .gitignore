@@ -1,0 +1,21 @@
+# Virtual Environment
+.venv/
+env/
+venv/
+
+# Playwright / Browser Cache & Sessions
+.browser_session/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary Assets & Output
+temp_svgs/
+*.pdf
+*.svg
+
+# IDE & Editor Configs
+.vscode/
+.idea/
