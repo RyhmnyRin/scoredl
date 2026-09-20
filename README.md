@@ -2,7 +2,7 @@
 
 CLI tool sederhana berbasis Python untuk mengunduh partitur musik dari **MuseScore** dan mengonversinya langsung menjadi satu file PDF utuh berkualitas tinggi (lossless SVG).
 
-![Python](https://img.shields.io/badge/python-3.x-blue)
+![Python](https://img.shields.io/badge/python-3.10+-blue)
 ![Playwright](https://img.shields.io/badge/automation-Playwright-2EAD33)
 
 ## Fitur
@@ -10,18 +10,21 @@ CLI tool sederhana berbasis Python untuk mengunduh partitur musik dari **MuseSco
 - 🔄 Auto-scroll & lazy load handling via Playwright
 - 🖼️ Konversi vektor SVG murni langsung ke lembaran PDF (lossless)
 - 🏷️ Penamaan file otomatis berdasarkan metadata judul lagu
+- 📂 Opsi simpan file SVG mentah ke subfolder terpisah (`--keep-svg`)
 - 🧹 Pembersihan file temporary otomatis setelah proses selesai
 
 ## Instalasi
 
-**1. Clone repositori**
+**Metode 1 — via PyPI (disarankan)**
+```bash
+pip install scoredl
+playwright install chromium
+```
+
+**Metode 2 — manual (mode developer)**
 ```bash
 git clone https://github.com/RyhmnyRin/scoredl.git
 cd scoredl
-```
-
-**2. Buat & aktifkan virtual environment**
-```bash
 python -m venv .venv
 
 # Windows PowerShell
@@ -29,32 +32,34 @@ python -m venv .venv
 
 # Linux/macOS
 source .venv/bin/activate
-```
 
-**3. Pasang dependensi & browser**
-```bash
-pip install -r requirements.txt
+pip install -e .
 playwright install chromium
 ```
 
 ## Penggunaan
 
-Jalankan script dengan URL partitur target:
-
 ```bash
-python main.py "https://musescore.com/user/xxxx/scores/yyyy"
+scoredl "https://musescore.com/user/xxxx/scores/yyyy"
 ```
 
-Tentukan nama file output (opsional):
-
+Tentukan nama file output:
 ```bash
-python main.py "https://musescore.com/user/xxxx/scores/yyyy" -o "NamaLagu.pdf"
+scoredl "https://musescore.com/user/xxxx/scores/yyyy" -o "NamaLagu.pdf"
 ```
 
-| Argumen | Deskripsi | Wajib |
-|---|---|---|
-| `url` | URL partitur MuseScore | ✅ |
-| `-o`, `--output` | Nama file PDF output | ❌ |
+Simpan juga file SVG mentahnya (tersimpan di `saved_svgs/<Judul Lagu>/`):
+```bash
+scoredl "https://musescore.com/user/xxxx/scores/yyyy" --keep-svg
+```
+
+## Argumen CLI
+
+| Argumen | Opsi Panjang | Deskripsi | Wajib |
+|---|---|---|---|
+| `url` | – | URL partitur MuseScore | ✅ |
+| `-o` | `--output` | Nama file PDF output | ❌ |
+| – | `--keep-svg` | Simpan file SVG mentah per halaman | ❌ |
 
 ## Kontributor
 
