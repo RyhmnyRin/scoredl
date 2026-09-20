@@ -61,6 +61,10 @@ scoredl "https://musescore.com/user/xxxx/scores/yyyy" --keep-svg
 | `-o` | `--output` | Nama file PDF output | ❌ |
 | – | `--keep-svg` | Simpan file SVG mentah per halaman | ❌ |
 
+## ⚠️ Disclaimer
+
+Tool ini dibuat murni untuk **tujuan edukasi dan pembelajaran teknik automasi browser**. Pengembang tidak bertanggung jawab atas penyalahgunaan software ini untuk pelanggaran hak cipta pihak ketiga. Harap dukung para musisi dan arranger dengan membeli lisensi resmi di MuseScore.
+
 ## Kontributor
 
 - [RyhmnyRin](https://github.com/RyhmnyRin)
