@@ -19,3 +19,7 @@ temp_svgs/
 # IDE & Editor Configs
 .vscode/
 .idea/
+
+build/
+dist/
+*.egg-info/

@@ -28,22 +28,28 @@ def extract_score_data(score_url: str, output_dir: str = "temp_svgs"):
         page = context.pages[0] if context.pages else context.new_page()
 
         # Intercept dan simpan konten SVG langsung dari memory browser
+        seen_svg_urls = set()
+        downloaded_files = []
+
         def handle_response(response):
             url = response.url
             if "scoredata" in url and ".svg" in url:
+                if url in seen_svg_urls:
+                    return
+                seen_svg_urls.add(url)
+
                 try:
-                    # Ambil bytes data SVG langsung tanpa download ulang
                     svg_content = response.body()
-                    page_index = len(svg_files)
-                    file_path = os.path.join(output_dir, f"page_{page_index}.svg")
-                    
+                    # Beri nama unik sementara berdasarkan index URL yang ditemukan
+                    idx = len(seen_svg_urls) - 1
+                    file_path = os.path.join(output_dir, f"page_{idx}.svg")
+
                     with open(file_path, "wb") as f:
                         f.write(svg_content)
-                    
-                    svg_files.append(file_path)
-                    print(f"[+] Berhasil menyimpan halaman {page_index + 1} -> {file_path}")
+
+                    print(f"[+] Berhasil menyimpan lembar -> {file_path}")
                 except Exception as e:
-                    print(f"[!] Gagal mengekstrak body SVG: {e}")
+                    print(f"[!] Gagal ekstrak SVG: {e}")
 
         page.on("response", handle_response)
 
@@ -80,7 +86,7 @@ def extract_score_data(score_url: str, output_dir: str = "temp_svgs"):
         }""")
 
         current_scroll = 0
-        step_size = 400
+        step_size = 850
 
         while current_scroll < total_height:
             current_scroll += step_size
@@ -100,7 +106,7 @@ def extract_score_data(score_url: str, output_dir: str = "temp_svgs"):
                 }}
             }}""", current_scroll)
 
-            time.sleep(random.uniform(1.2, 1.8))
+            time.sleep(1)
 
             total_height = page.evaluate("""() => {
                 const scroller = document.querySelector('#jmuse-scroller-component');
@@ -108,10 +114,25 @@ def extract_score_data(score_url: str, output_dir: str = "temp_svgs"):
             }""")
 
         print("[*] Menunggu finalisasi asset...")
-        time.sleep(3)
+        time.sleep(0.4)
 
         metadata["pages"] = len(svg_files)
         context.close()
+        
+            # Ambil file fisik langsung dari disk agar tidak ada duplikat memori
+        all_svgs = [
+            os.path.join(output_dir, f) 
+            for f in os.listdir(output_dir) 
+            if f.endswith(".svg")
+        ]
+        
+        # Urutkan berdasarkan angka halaman asli (page_0, page_1, dst)
+        import re
+        all_svgs.sort(key=lambda x: int(re.search(r'page_(\d+)', x).group(1)))
+        
+        # Update total halaman valid yang sebenarnya tersimpan
+        metadata["pages"] = len(all_svgs)
+        svg_files = all_svgs
 
     return metadata, svg_files
 
